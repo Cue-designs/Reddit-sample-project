@@ -1,14 +1,12 @@
 import React from "react";
-import PostForm from "./PostForm";
 import PostItem from "./PostItem";
 
-const PostList = ({ posts, onUpdatePost, onDeletePost, onAddPost }) => {
+const PostList = ({ posts, onUpdatePost, onDeletePost }) => {
   return (
     <div className="space-y-4">
-      <PostForm onAddPost={onAddPost} />
       {posts.length === 0 ? (
         <div className="rounded-3xl border border-surface bg-surface p-6 text-center text-sm text-secondary">
-          No posts yet. Create one above to start the feed.
+          No posts yet. Create one via the Create Post page to start the feed.
         </div>
       ) : (
         posts.map((post) => (

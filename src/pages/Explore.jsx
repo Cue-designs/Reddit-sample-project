@@ -89,17 +89,37 @@ const Explore = ({ theme, toggleTheme }) => {
               Resources
             </h3>
             <ul className="space-y-2 text-sm text-secondary">
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                About Reddit
+              <li>
+                <Link
+                  to="/about"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  About Reddit
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Advertise
+              <li>
+                <Link
+                  to="/advertise"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Advertise
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Developer Platform
+              <li>
+                <Link
+                  to="/developer-platform"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Developer Platform
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Help
+              <li>
+                <Link
+                  to="/help"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Help
+                </Link>
               </li>
             </ul>
           </div>

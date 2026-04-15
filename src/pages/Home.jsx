@@ -3,16 +3,75 @@ import { Link } from "react-router-dom";
 import PostList from "../PostList";
 import PageHeader from "../components/PageHeader";
 
-const Home = ({ theme, toggleTheme }) => {
-  const [posts, setPosts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+const defaultPosts = [
+  {
+    id: "1",
+    title: "What should I build next in my Minecraft world?",
+    content:
+      "I just finished a castle and want a fun community project. What should I add next?",
+    community: "r/Minecraft",
+    votes: 18,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "2",
+    title: "How do I fix my workout routine?",
+    content:
+      "I've been stuck at the same fitness level for weeks. Any tips on staying motivated and improving results?",
+    community: "r/Fitness",
+    votes: 22,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "3",
+    title: "Anyone know why my game crashes?",
+    content:
+      "My game freezes after loading the first level. I already updated drivers and restarted. What else should I try?",
+    community: "r/NoStupidQuestions",
+    votes: 14,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "4",
+    title: "Best DnD character concepts for new players?",
+    content:
+      "Looking for a simple but fun character idea for a first-time DnD campaign.",
+    community: "r/DnD",
+    votes: 19,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "5",
+    title: "Favorite viral video this week?",
+    content:
+      "Share the most entertaining video you've seen recently. I'm collecting fun links for the community.",
+    community: "r/videos",
+    votes: 11,
+    comments: [],
+    timestamp: Date.now(),
+  },
+];
 
-  useEffect(() => {
+const Home = ({ theme, toggleTheme }) => {
+  const [posts, setPosts] = useState(() => {
     const savedPosts = localStorage.getItem("posts");
     if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
+      try {
+        const parsedPosts = JSON.parse(savedPosts);
+        if (Array.isArray(parsedPosts)) {
+          return parsedPosts;
+        }
+      } catch (err) {
+        console.warn("Unable to parse saved posts:", err);
+      }
     }
-  }, []);
+    return defaultPosts;
+  });
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     localStorage.setItem("posts", JSON.stringify(posts));
@@ -24,11 +83,6 @@ const Home = ({ theme, toggleTheme }) => {
 
   const handleDeletePost = (postId) => {
     setPosts((posts) => posts.filter((p) => p.id !== postId));
-  };
-
-  const handleAddPost = (post) => {
-    setPosts((posts) => [post, ...posts]);
-    setSearchQuery("");
   };
 
   const filteredPosts = posts.filter(
@@ -89,17 +143,37 @@ const Home = ({ theme, toggleTheme }) => {
               Resources
             </h3>
             <ul className="space-y-2 text-sm text-secondary">
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                About Reddit
+              <li>
+                <Link
+                  to="/about"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  About Reddit
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Advertise
+              <li>
+                <Link
+                  to="/advertise"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Advertise
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Developer Platform
+              <li>
+                <Link
+                  to="/developer-platform"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Developer Platform
+                </Link>
               </li>
-              <li className="rounded-2xl px-3 py-2 hover:bg-surface-strong">
-                Help
+              <li>
+                <Link
+                  to="/help"
+                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
+                >
+                  Help
+                </Link>
               </li>
             </ul>
           </div>
@@ -116,16 +190,18 @@ const Home = ({ theme, toggleTheme }) => {
                   Community posts from the feed
                 </p>
               </div>
-              <button className="rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2]">
+              <Link
+                to="/create"
+                className="inline-flex rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2]"
+              >
                 Create Post
-              </button>
+              </Link>
             </div>
           </div>
           <PostList
             posts={filteredPosts}
             onUpdatePost={handleUpdatePost}
             onDeletePost={handleDeletePost}
-            onAddPost={handleAddPost}
           />
         </main>
 
