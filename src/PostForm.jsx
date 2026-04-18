@@ -111,7 +111,7 @@ const PostForm = ({ onAddPost }) => {
           </div>
           {media && (
             <div className="rounded-2xl border border-surface bg-surface-alt p-3">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 {media.type === "image" ? (
                   <img
                     src={media.url}

@@ -3,19 +3,78 @@ import { Link } from "react-router-dom";
 import PostList from "../PostList";
 import PageHeader from "../components/PageHeader";
 
+const defaultPosts = [
+  {
+    id: "news1",
+    title: "Major breakthrough in renewable energy technology",
+    content:
+      "Scientists announce a new solar panel design that could reduce costs by 40%. This could revolutionize the energy sector.",
+    community: "r/news",
+    votes: 156,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "news2",
+    title: "New space mission launches successfully",
+    content:
+      "NASA's latest mission to study climate change from orbit has successfully reached its destination. Early data looks promising.",
+    community: "r/space",
+    votes: 89,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "news3",
+    title: "Tech company announces major layoffs",
+    content:
+      "Following recent market challenges, a major tech company has announced plans to reduce its workforce by 15%.",
+    community: "r/technology",
+    votes: 234,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "news4",
+    title: "New medical treatment shows promising results",
+    content:
+      "Clinical trials for a new treatment show significant improvement in patient outcomes. Experts are cautiously optimistic.",
+    community: "r/science",
+    votes: 67,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "news5",
+    title: "Global climate summit reaches historic agreement",
+    content:
+      "World leaders have agreed on new emissions targets that could help limit global warming to 1.5°C above pre-industrial levels.",
+    community: "r/worldnews",
+    votes: 312,
+    comments: [],
+    timestamp: Date.now(),
+  },
+];
+
 const News = ({ theme, toggleTheme }) => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(() => {
+    const savedPosts = localStorage.getItem("newsPosts");
+    if (savedPosts) {
+      try {
+        const parsedPosts = JSON.parse(savedPosts);
+        if (Array.isArray(parsedPosts)) {
+          return parsedPosts;
+        }
+      } catch (err) {
+        console.warn("Unable to parse saved posts:", err);
+      }
+    }
+    return defaultPosts;
+  });
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem("posts");
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("posts", JSON.stringify(posts));
+    localStorage.setItem("newsPosts", JSON.stringify(posts));
   }, [posts]);
 
   const handleUpdatePost = (postId, updater) => {
@@ -46,88 +105,10 @@ const News = ({ theme, toggleTheme }) => {
         toggleTheme={toggleTheme}
       />
 
-      <div className="mx-auto grid w-full max-w-[1500px] grid-cols-[260px_minmax(0,1fr)_320px] gap-4 px-4 py-5 xl:px-8">
-        <aside className="space-y-4">
-          <div className="rounded-3xl border border-surface bg-surface p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
-                News
-              </h2>
-              <span className="rounded-full bg-surface-alt px-2 py-1 text-[11px] uppercase text-primary">
-                News
-              </span>
-            </div>
-            <div className="space-y-3 text-sm text-secondary">
-              <Link
-                to="/"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                Home
-              </Link>
-              <Link
-                to="/popular"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                Popular
-              </Link>
-              <Link
-                to="/news"
-                className="block rounded-2xl bg-surface-alt px-3 py-2"
-              >
-                News
-              </Link>
-              <Link
-                to="/explore"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                Explore
-              </Link>
-            </div>
-          </div>
-          <div className="rounded-3xl border border-surface bg-surface p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
-              Resources
-            </h3>
-            <ul className="space-y-2 text-sm text-secondary">
-              <li>
-                <Link
-                  to="/about"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  About Reddit
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/advertise"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Advertise
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/developer-platform"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Developer Platform
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/help"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Help
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </aside>
-
-        <main className="space-y-4">
+      <div className="mx-auto grid w-full max-w-[1500px] grid-cols-1 gap-4 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_320px] xl:px-8">
+        <main className="order-1 space-y-4">
           <div className="rounded-3xl border border-surface bg-surface p-5">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--text-h)]">
                   News posts
@@ -136,7 +117,7 @@ const News = ({ theme, toggleTheme }) => {
                   Latest news and discussions
                 </p>
               </div>
-              <button className="rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2]">
+              <button className="inline-flex w-full justify-center rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2] sm:w-auto">
                 Create Post
               </button>
             </div>
@@ -149,7 +130,7 @@ const News = ({ theme, toggleTheme }) => {
           />
         </main>
 
-        <aside className="space-y-4">
+        <aside className="order-3 space-y-4">
           <div className="rounded-3xl border border-surface bg-surface p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">

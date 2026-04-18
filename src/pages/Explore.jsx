@@ -3,19 +3,78 @@ import { Link } from "react-router-dom";
 import PostList from "../PostList";
 import PageHeader from "../components/PageHeader";
 
+const defaultPosts = [
+  {
+    id: "explore1",
+    title: "Hidden gems: Underrated hiking trails near you",
+    content:
+      "Share your favorite lesser-known hiking spots that deserve more attention. What's that trail that always feels like a secret?",
+    community: "r/hiking",
+    votes: 45,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "explore2",
+    title: "What's the most interesting fact you know?",
+    content:
+      "Share something fascinating that most people don't know. Bonus points if it's something you can verify!",
+    community: "r/todayilearned",
+    votes: 78,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "explore3",
+    title: "Show off your photography skills!",
+    content:
+      "Post your best photos from this week. Any theme, any subject. Let's see what you've captured!",
+    community: "r/photography",
+    votes: 92,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "explore4",
+    title: "What's your go-to comfort food recipe?",
+    content:
+      "Share your favorite recipe that always makes you feel better. Include ingredients and instructions!",
+    community: "r/recipes",
+    votes: 134,
+    comments: [],
+    timestamp: Date.now(),
+  },
+  {
+    id: "explore5",
+    title: "Weird dreams you've had recently",
+    content:
+      "What's the strangest dream you've had lately? Let's share our subconscious adventures!",
+    community: "r/Dreams",
+    votes: 56,
+    comments: [],
+    timestamp: Date.now(),
+  },
+];
+
 const Explore = ({ theme, toggleTheme }) => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(() => {
+    const savedPosts = localStorage.getItem("explorePosts");
+    if (savedPosts) {
+      try {
+        const parsedPosts = JSON.parse(savedPosts);
+        if (Array.isArray(parsedPosts)) {
+          return parsedPosts;
+        }
+      } catch (err) {
+        console.warn("Unable to parse saved posts:", err);
+      }
+    }
+    return defaultPosts;
+  });
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem("posts");
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("posts", JSON.stringify(posts));
+    localStorage.setItem("explorePosts", JSON.stringify(posts));
   }, [posts]);
 
   const handleUpdatePost = (postId, updater) => {
@@ -46,88 +105,10 @@ const Explore = ({ theme, toggleTheme }) => {
         toggleTheme={toggleTheme}
       />
 
-      <div className="mx-auto grid w-full max-w-[1500px] grid-cols-[260px_minmax(0,1fr)_320px] gap-4 px-4 py-5 xl:px-8">
-        <aside className="space-y-4">
-          <div className="rounded-3xl border border-surface bg-surface p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
-                Explore
-              </h2>
-              <span className="rounded-full bg-surface-alt px-2 py-1 text-[11px] uppercase text-primary">
-                Explore
-              </span>
-            </div>
-            <div className="space-y-3 text-sm text-secondary">
-              <Link
-                to="/"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                Home
-              </Link>
-              <Link
-                to="/popular"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                Popular
-              </Link>
-              <Link
-                to="/news"
-                className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-              >
-                News
-              </Link>
-              <Link
-                to="/explore"
-                className="block rounded-2xl bg-surface-alt px-3 py-2"
-              >
-                Explore
-              </Link>
-            </div>
-          </div>
-          <div className="rounded-3xl border border-surface bg-surface p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
-              Resources
-            </h3>
-            <ul className="space-y-2 text-sm text-secondary">
-              <li>
-                <Link
-                  to="/about"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  About Reddit
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/advertise"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Advertise
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/developer-platform"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Developer Platform
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/help"
-                  className="block rounded-2xl px-3 py-2 hover:bg-surface-strong"
-                >
-                  Help
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </aside>
-
-        <main className="space-y-4">
+      <div className="mx-auto grid w-full max-w-[1500px] grid-cols-1 gap-4 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_320px] xl:px-8">
+        <main className="order-1 space-y-4">
           <div className="rounded-3xl border border-surface bg-surface p-5">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--text-h)]">
                   Explore posts
@@ -136,7 +117,7 @@ const Explore = ({ theme, toggleTheme }) => {
                   Discover new communities and content
                 </p>
               </div>
-              <button className="rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2]">
+              <button className="inline-flex w-full justify-center rounded-full bg-[#0079d3] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1781f2] sm:w-auto">
                 Create Post
               </button>
             </div>
@@ -149,7 +130,7 @@ const Explore = ({ theme, toggleTheme }) => {
           />
         </main>
 
-        <aside className="space-y-4">
+        <aside className="order-3 space-y-4">
           <div className="rounded-3xl border border-surface bg-surface p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">

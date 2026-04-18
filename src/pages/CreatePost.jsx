@@ -7,10 +7,16 @@ const CreatePost = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
 
   const handleAddPost = (post) => {
-    const savedPosts = localStorage.getItem("posts");
-    const parsedPosts = savedPosts ? JSON.parse(savedPosts) : [];
-    const updatedPosts = [post, ...parsedPosts];
-    localStorage.setItem("posts", JSON.stringify(updatedPosts));
+    // Add the new post to all page localStorage keys
+    const pageKeys = ["homePosts", "popularPosts", "newsPosts", "explorePosts"];
+
+    pageKeys.forEach((key) => {
+      const savedPosts = localStorage.getItem(key);
+      const parsedPosts = savedPosts ? JSON.parse(savedPosts) : [];
+      const updatedPosts = [post, ...parsedPosts];
+      localStorage.setItem(key, JSON.stringify(updatedPosts));
+    });
+
     navigate("/");
   };
 
